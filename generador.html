@@ -84,13 +84,13 @@
             const isImageUrl = lang.flag.startsWith('http://') || lang.flag.startsWith('https://');
             let flagContent;
             if (isImageUrl) {
-                // CAMBIO CLAVE AQUÍ: Usando concatenación para la URL de la imagen en lugar de interpolación compleja
+                // CAMBIO CLAVE AQUÍ: Usando concatenación para construir la URL de la imagen en HTML
                 flagContent = '<img src="' + lang.flag + '" alt="' + (lang.name || lang.code) + '" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" onerror="this.onerror=null;this.src=\'https://placehold.co/64x64/FF0000/FFFFFF?text=ERR\';">';
             } else {
                 flagContent = lang.flag;
             }
             return `
-                <span class="language-flag" data-lang="<span class="math-inline">\{lang\.code\}" style\="font\-size\: 3\.2em; line\-height\: 1; border\-radius\: 50%; width\: 64px; height\: 64px; display\: flex; align\-items\: center; justify\-content\: center; background\-color\: \#333; box\-shadow\: 0 2px 8px rgba\(0,0,0,0\.4\); cursor\: pointer; transition\: transform 0\.2s ease, background\-color 0\.2s ease;" title\="</span>{lang.name || lang.code}">
+                <span class="language-flag" data-lang="${lang.code}" style="font-size: 3.2em; line-height: 1; border-radius: 50%; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; background-color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.4); cursor: pointer; transition: transform 0.2s ease, background-color 0.2s ease;" title="${lang.name || lang.code}">
                     ${flagContent}
                 </span>
             `;
@@ -131,7 +131,7 @@
             if (!lang) return '';
             const isImageUrl = lang.flag.startsWith('http://') || lang.flag.startsWith('https://');
             if (isImageUrl) {
-                // CAMBIO CLAVE AQUÍ: Usando concatenación para la URL de la imagen
+                // CAMBIO CLAVE AQUÍ: Usando concatenación para construir la URL de la imagen
                 return '<img src="' + lang.flag + '" alt="' + (lang.name || lang.code) + '" style="width: 1.2em; height: 1.2em; border-radius: 50%; object-fit: cover; vertical-align: middle;" onerror="this.onerror=null;this.src=\'https://placehold.co/20x20/FF0000/FFFFFF?text=ERR\';">';
             } else {
                 return lang.flag;
@@ -174,18 +174,17 @@
                 serverDiv.onclick = () => showServerDetails(server);
 
                 const serverLangsHtml = server.lang.split(',').map(code => {
-                    // Aquí también se usa interpolación normal de template literal para llamar a getFlagHtml
                     return `<span style="font-size: 1.2em; margin-right: 5px;">${getFlagHtml(code.trim())}</span>`;
                 }).join('');
 
                 serverDiv.innerHTML = `
                     <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2em; margin-right: 15px;">
-                        <span class="math-inline">\{server\.name ? server\.name\.charAt\(0\)\.toUpperCase\(\) \: '?'\}
-</div\>
-<div\>
-<h3 style\="margin\: 0; font\-size\: 1\.1em; font\-weight\: 600; color\: \#ffffff;"\></span>{server.name || 'Nombre del Servidor'}</h3>
-                        <p style="margin: 0; font-size: 0.9em; color: #b0b0b0;"><span class="math-inline">\{server\.type \|\| 'Tipo de Stream/Descarga'\}</p\>
-<div style\="margin\-top\: 5px;"\></span>{serverLangsHtml}</div>
+                        ${server.name ? server.name.charAt(0).toUpperCase() : '?'}
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.1em; font-weight: 600; color: #ffffff;">${server.name || 'Nombre del Servidor'}</h3>
+                        <p style="margin: 0; font-size: 0.9em; color: #b0b0b0;">${server.type || 'Tipo de Stream/Descarga'}</p>
+                        <div style="margin-top: 5px;">${serverLangsHtml}</div>
                     </div>
                 `;
                 serversListContainer.appendChild(serverDiv);
