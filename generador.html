@@ -93,7 +93,7 @@
                 flagContent = lang.flag;
             }
             return `
-                <span class="language-flag" data-lang="<span class="math-inline">\{lang\.code\}" style\="font\-size\: 3\.2em; line\-height\: 1; border\-radius\: 50%; width\: 64px; height\: 64px; display\: flex; align\-items\: center; justify\-content\: center; background\-color\: \#333; box\-shadow\: 0 2px 8px rgba\(0,0,0,0\.4\); cursor\: pointer; transition\: transform 0\.2s ease, background\-color 0\.2s ease;" title\="</span>{lang.name || lang.code}">
+                <span class="language-flag" data-lang="${lang.code}" style="font-size: 3.2em; line-height: 1; border-radius: 50%; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; background-color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.4); cursor: pointer; transition: transform 0.2s ease, background-color 0.2s ease;" title="${lang.name || lang.code}">
                     ${flagContent}
                 </span>
             `;
@@ -120,6 +120,12 @@
 
     <script type="text/javascript">
         console.log("Inicio del script type='text/javascript' (DOM manipulation)");
+        // Los datos de servers y languages ahora provienen del ámbito de React (del script de Babel).
+        // Si no quieres que estos datos sean globales, deberías pasarlos como argumentos a displayServers
+        // o generarlos directamente en el script de Babel y pasar el HTML final.
+        // Pero para depuración, es útil que estén accesibles para la consola.
+        // NOTA: Estas variables 'servers' y 'languages' en este scope son una COPIA de los estados de React.
+        // Cualquier modificación aquí no afectará el estado de React.
         const allServersData = ${JSON.stringify(servers)};
         const allLanguagesData = ${JSON.stringify(languages)};
 
@@ -165,21 +171,23 @@
                 serverDiv.style.cssText = "display: flex; align-items: center; background-color: rgba(40, 40, 40, 0.5); padding: 15px 20px; border-radius: 10px; text-decoration: none; color: #e0e0e0; transition: background-color 0.3s ease, transform 0.2s ease; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); cursor: pointer; width: 100%;";
                 serverDiv.onclick = () => showServerDetails(server);
 
-                // ****** CAMBIO CLAVE AQUÍ ******
-                // Para evitar el error de Babel con template literals anidados
                 const langSpans = server.lang.split(',').map(code => {
-                    const flagHtml = getFlagHtml(code.trim()); // Obtener el HTML de la bandera
-                    return '<span style="font-size: 1.2em; margin-right: 5px;">' + flagHtml + '</span>'; // Concatenar la cadena
+                    const flagHtml = getFlagHtml(code.trim());
+                    return '<span style="font-size: 1.2em; margin-right: 5px;">' + flagHtml + '</span>';
                 }).join('');
+
+                // ****** CAMBIO CLAVE AQUÍ ******
+                // Extraemos la expresión condicional a una variable separada
+                const serverNameInitial = server.name ? server.name.charAt(0).toUpperCase() : '?';
 
                 serverDiv.innerHTML = `
                     <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2em; margin-right: 15px;">
-                        <span class="math-inline">\{server\.name ? server\.name\.charAt\(0\)\.toUpperCase\(\) \: '?'\}
-</div\>
-<div\>
-<h3 style\="margin\: 0; font\-size\: 1\.1em; font\-weight\: 600; color\: \#ffffff;"\></span>{server.name || 'Nombre del Servidor'}</h3>
-                        <p style="margin: 0; font-size: 0.9em; color: #b0b0b0;"><span class="math-inline">\{server\.type \|\| 'Tipo de Stream/Descarga'\}</p\>
-<div style\="margin\-top\: 5px;"\></span>{langSpans}</div>
+                        ${serverNameInitial}
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.1em; font-weight: 600; color: #ffffff;">${server.name || 'Nombre del Servidor'}</h3>
+                        <p style="margin: 0; font-size: 0.9em; color: #b0b0b0;">${server.type || 'Tipo de Stream/Descarga'}</p>
+                        <div style="margin-top: 5px;">${langSpans}</div>
                     </div>
                 `;
                 serversListContainer.appendChild(serverDiv);
