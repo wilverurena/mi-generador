@@ -84,7 +84,6 @@
             const isImageUrl = lang.flag.startsWith('http://') || lang.flag.startsWith('https://');
             let flagContent;
             if (isImageUrl) {
-                // CAMBIO CLAVE AQUÍ: Usando concatenación para construir la URL de la imagen en HTML
                 flagContent = '<img src="' + lang.flag + '" alt="' + (lang.name || lang.code) + '" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" onerror="this.onerror=null;this.src=\'https://placehold.co/64x64/FF0000/FFFFFF?text=ERR\';">';
             } else {
                 flagContent = lang.flag;
@@ -131,7 +130,6 @@
             if (!lang) return '';
             const isImageUrl = lang.flag.startsWith('http://') || lang.flag.startsWith('https://');
             if (isImageUrl) {
-                // CAMBIO CLAVE AQUÍ: Usando concatenación para construir la URL de la imagen
                 return '<img src="' + lang.flag + '" alt="' + (lang.name || lang.code) + '" style="width: 1.2em; height: 1.2em; border-radius: 50%; object-fit: cover; vertical-align: middle;" onerror="this.onerror=null;this.src=\'https://placehold.co/20x20/FF0000/FFFFFF?text=ERR\';">';
             } else {
                 return lang.flag;
@@ -158,19 +156,8 @@
             filteredServers.forEach(server => {
                 const serverDiv = document.createElement('div');
                 serverDiv.className = "server-item";
-                serverDiv.style.cssText = `
-                    display: flex;
-                    align-items: center;
-                    background-color: rgba(40, 40, 40, 0.5);
-                    padding: 15px 20px;
-                    border-radius: 10px;
-                    text-decoration: none;
-                    color: #e0e0e0;
-                    transition: background-color 0.3s ease, transform 0.2s ease;
-                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-                    cursor: pointer;
-                    width: 100%;
-                `;
+                // CAMBIO CLAVE AQUÍ: CSS en una sola línea para evitar problemas con Babel
+                serverDiv.style.cssText = "display: flex; align-items: center; background-color: rgba(40, 40, 40, 0.5); padding: 15px 20px; border-radius: 10px; text-decoration: none; color: #e0e0e0; transition: background-color 0.3s ease, transform 0.2s ease; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); cursor: pointer; width: 100%;";
                 serverDiv.onclick = () => showServerDetails(server);
 
                 const serverLangsHtml = server.lang.split(',').map(code => {
